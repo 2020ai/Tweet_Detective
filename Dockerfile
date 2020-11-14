@@ -1,6 +1,6 @@
 FROM ubuntu:16.04
 
-MAINTAINER Nadaa Taiyab "nadaa.taiyab@gmail.com"
+MAINTAINER Sara Alizadeh and Shayan Liaghat "sara72alizadeh@gmail.com" "shayanliaghat@gmail.com"
 
 RUN apt-get update -y && \
     apt-get install -y python-pip python-dev && \
