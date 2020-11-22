@@ -88,7 +88,7 @@ var statisticsChart = new Chart(ctx, {
 			legendColor: '#177dff',
 			fill: true,
 			borderWidth: 2,
-			data: [542, 480, 430, 550, 530, 453, 380, 434, 568, 610, 700, 900]
+			data: [1000, 480, 430, 550, 530, 453, 380, 434, 568, 610, 1000, 900]
 		}]
 	},
 	options : {

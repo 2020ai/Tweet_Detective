@@ -4,11 +4,11 @@
 				<div class="sidebar-content">
 
 					{% if current_user.is_authenticated %}
-						<div class="user">
-							<div class="avatar-sm float-left mr-2">
+						<!-- <div class="user"> -->
+							<!-- <div class="avatar-sm float-left mr-0">
 								<img src="/static/assets/img/profile.jpg" alt="..." class="avatar-img rounded-circle">
-							</div>
-							<div class="info">
+							</div> -->
+							<!-- <div class="info">
 								<a data-toggle="collapse" href="#collapseExample" aria-expanded="true">
 									<span>
 										{{ current_user.username }}
@@ -32,8 +32,8 @@
 										</li>
 									</ul>
 								</div>
-							</div>
-						</div>
+							</div> -->
+						<!-- </div> -->
 						<ul class="nav nav-primary">
 							<li class="nav-item active">
 								<a data-toggle="collapse" href="#dashboard" class="collapsed" aria-expanded="false">
@@ -51,13 +51,13 @@
 									</ul>
 								</div>
 							</li>
-							<li class="nav-section">
+							<!-- <li class="nav-section">
 								<span class="sidebar-mini-icon">
 									<i class="fa fa-ellipsis-h"></i>
 								</span>
 								<h4 class="text-section">Components</h4>
-							</li>
-							<li class="nav-item">
+							</li> -->
+							<!-- <li class="nav-item">
 								<a data-toggle="collapse" href="#base">
 									<i class="fas fa-layer-group"></i>
 									<p>Base</p>
@@ -291,9 +291,9 @@
 									href="https://appseed.us/admin-dashboards/flask-dashboard-atlantis-dark-pro" 
 										class="btn btn-primary btn-block">
 										<span class="btn-label mr-2"> <i class="fa fa-rocket"></i> </span>PRO Version</a> 
-							</li>
+							</li> -->
 						</ul>
-					{% else %}
+					<!-- {% else %}
 						<ul class="nav nav-primary">
 							<li class="mx-4 mt-2">
 								<a  target="_blank"
@@ -302,7 +302,7 @@
 										<span class="btn-label mr-2"> <i class="fa fa-rocket"></i> </span>PRO Version</a> 
 							</li>
 						</ul>											
-					{% endif %}	
+					{% endif %}	 -->
 
 				</div>
 			</div>
