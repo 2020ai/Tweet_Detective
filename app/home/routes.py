@@ -5,18 +5,36 @@ Copyright (c) 2019 - present AppSeed.us
 
 from app.home import blueprint
 from flask import render_template, redirect, url_for, request
-from flask_login import login_required, current_user
 from app import login_manager
 from jinja2 import TemplateNotFound
+from app.home import TweetDetective
+
+
+@blueprint.route('/')
+def route_default():
+    return redirect(url_for('home_blueprint.search'))
+
+@blueprint.route('/search', methods=['GET', 'POST'])
+def search():
+    if request.method == 'GET':
+        return render_template('login.html')
+    elif request.method == 'POST':
+        if request.form['search']:
+            search_query = request.form['search']
+            print('search term: ', search_query)
+            tweetDetective = TweetDetective.TweetDetective()
+            sentiment_plot = tweetDetective.run(search_query)
+            return render_template('index.html', segment='index', sentiment_plot=sentiment_plot)
+            #return redirect(url_for('home_blueprint.index'))
+        else:
+            return render_template('login.html')
 
 @blueprint.route('/index')
-@login_required
 def index():
 
     return render_template('index.html', segment='index')
 
 @blueprint.route('/<template>')
-@login_required
 def route_template(template):
 
     try:
