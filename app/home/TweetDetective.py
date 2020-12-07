@@ -5,6 +5,7 @@ import numpy as np
 import seaborn as sns
 import nltk
 nltk.downloader.download('vader_lexicon')
+nltk.downloader.download('stopwords')
 import re
 import io
 import base64
