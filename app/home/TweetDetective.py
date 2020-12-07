@@ -9,10 +9,11 @@ import io
 import base64
 from twython import Twython
 from nltk.corpus import stopwords
-from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.feature_extraction.text import TfidfTransformer
+from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
+from sklearn.decomposition import LatentDirichletAllocation
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
-#from sklearn.decomposition import LatentDirichletAllocatio
+from wordcloud import WordCloud, ImageColorGenerator
+from PIL import Image
 
 
 # Twitter API credentials
@@ -251,17 +252,22 @@ class TweetDetective():
 
         # Vectorization using Countvectorize
         cv = CountVectorizer(analyzer=self.tokenize_tweet, max_df=max_df,
-                             min_df=min_df, max_features=max_features)
+                             min_df=min_df, max_features=max_features, 
+                             stop_words = stopwords.words('english')+STOP_WORDS)
         tweets_bow = cv.fit_transform(tweets)
-        feature_names = cv.get_feature_names()
-        return tweets_bow, feature_names
+        cv_feature_names = cv.get_feature_names()
+        return tweets_bow, cv_feature_names
 
-    def create_tfidf(self, tweets_bow):
+    def create_tfidf(self, tweets, max_df=0.95, min_df=2,
+                            max_features=None):
         '''Create the TF-IDF of tweets
         '''
-        tfidf_transformer = TfidfTransformer().fit(tweets_bow)
-        tweets_tfidf = tfidf_transformer.transform(tweets_bow)
-        return tweets_tfidf
+        tfidf = TfidfVectorizer(analyzer=self.tokenize_tweet, max_df=max_df,
+                             min_df=min_df, max_features=max_features,
+                             stop_words = stopwords.words('english')+STOP_WORDS)
+        tweets_tfidf = tfidf.fit_transform(tweets)
+        tfidf_feature_names = tfidf.get_feature_names()
+        return tweets_tfidf, tfidf_feature_names
 
     def sentiment_analysis(self, tweet):
         '''Takes a tweet and return the sentiment scores which is
@@ -300,8 +306,8 @@ class TweetDetective():
         return self.sentiment
         
 
-    def topic_modeling(self, tweets, num_components=7,
-                       num_words_per_topic=10,
+    def topic_modeling(self, tweets, num_components=4,
+                       num_words_per_topic=20,
                        random_state=42,
                        max_df=0.95, min_df=2,
                        max_features=None):
@@ -310,25 +316,117 @@ class TweetDetective():
         '''
 
         #create the bags of words
-        tweets_bow, feature_names = self.create_bag_of_words(tweets, max_df=max_df,
+        tweets_bow, cv_feature_names = self.create_bag_of_words(tweets, max_df=max_df,
                                                              min_df=min_df,
                                                              max_features=max_features)
 
         #create an instace of LatentDirichletAllocation
-        #lda=LatentDirichletAllocation(n_components=num_components,
-        #                             random_state=random_state)
-        #lda.fit(tweets_bow)
+        LDA=LatentDirichletAllocation(n_components=num_components, random_state=random_state)
+        LDA.fit(tweets_bow)
 
         #grab the highest probability words per topic
-        ''' words_per_topic={}
-        for index, topic in enumerate(lda.components_):
-            words_per_topic[index]=[feature_names[i]
-                                    for i in topic.argsort()[-15:]]
+        words_per_topic={}
+        for index, topic in enumerate(LDA.components_):
+            words_per_topic[index]=[cv_feature_names[i]
+                                    for i in topic.argsort()[-20:]]
 
-        topic_results=lda.transform(tweets_bow)
-        topics=topic_results.argmax(axis=1)
-        return topics, words_per_topic '''
+        topic_results = LDA.transform(tweets_bow)
+        topics = topic_results.argmax(axis=1)
+        return topics, words_per_topic
 
+    def plot_topic_wordcloud(self, tweets_df):
+        '''Plots the WordCloud for each topic
+        '''
+        if len(tweets_df) > 0:
+            mask = np.array(Image.open("wordcloud_template_square.jpg"))
+            wc = WordCloud(font_path='CabinSketch-Bold.ttf', background_color='black', 
+                        mask=mask, mode='RGB',
+                        width=1000, max_words=50, height=1000, relative_scaling=0.5,
+                        random_state=1, contour_width=10, contour_color='white', 
+                        stopwords=stopwords.words('english')+STOP_WORDS)
+            self.topic_wordcloud_pics = []
+            for i in range(4):
+                img = io.BytesIO()
+                text_all = ''
+                text_all = ' '.join(text for text in tweets_df[tweets_df['topic']==i]['clean_text'])
+                wc.generate(text_all)
+                plt.figure(figsize=(15, 15))
+                plt.imshow(wc, interpolation='bilinear')
+                plt.tight_layout(pad=0)
+                plt.axis('off')
+                plt.savefig(img, format='png', facecolor=(
+                    0, 0, 0, 1), edgecolor=(0, 0, 0, 1))
+                img.seek(0)
+                figure_url = base64.b64encode(img.getvalue()).decode()
+                plt.close()
+                self.topic_wordcloud_pics.append('data:image/png;base64,{}'.format(figure_url))
+        else:
+            img = io.BytesIO()
+            plt.figure(figsize=(6, 4))
+            plt.text(0.5, 0.5, "No Results", size=30,
+                     ha="center", va="center",
+                     bbox=dict(boxstyle="round",
+                               ec=(1., 0.5, 0.5),
+                               fc=(1., 0.8, 0.8),))
+            plt.rcParams['axes.facecolor'] = (0.22, 0.23, 0.31, 1)
+            plt.rcParams['axes.edgecolor'] = (0.22, 0.23, 0.31, 1)
+            #plt.xlabel("")
+            #plt.ylabel("Count", color='silver')
+            plt.tick_params(colors='silver')
+            plt.savefig(img, format='png', facecolor=(
+                0.22, 0.23, 0.31, 1), edgecolor=(0.22, 0.23, 0.31, 1))
+            img.seek(0)
+            figure_url = base64.b64encode(img.getvalue()).decode()
+            plt.close()
+            topic_wordcloud_pic = 'data:image/png;base64,{}'.format(figure_url)
+            self.topic_wordcloud_pics = [topic_wordcloud_pic]*4
+        return self.topic_wordcloud_pics
+
+    def plot_topic_count(self, topics):
+        '''countplot for topics
+        '''
+        logger.info('Creating a plot of all topic counts...')
+        
+        if len(topics) > 0:
+            img = io.BytesIO()
+            plt.figure(figsize=(6, 3))
+            sns.countplot(topics, palette="RdPu")
+            plt.rcParams['font.family'] = "arial"
+            plt.rcParams['axes.facecolor'] = (0.22, 0.23, 0.31, 1)
+            plt.rcParams['axes.edgecolor'] = (0.22, 0.23, 0.31, 1)
+            plt.tick_params(colors='silver')
+            plt.xlabel("")
+            plt.ylabel("Count", color='silver')        
+            plt.tight_layout()
+            plt.savefig(img, format='png', facecolor=(
+                0.22, 0.23, 0.31, 1), edgecolor=(0.22, 0.23, 0.31, 1))
+            img.seek(0)
+            figure_url = base64.b64encode(img.getvalue()).decode()
+            plt.close()
+            self.topic_count_plot = 'data:image/png;base64,{}'.format(figure_url)
+        else:
+            img = io.BytesIO()
+            plt.figure(figsize=(6, 4))
+            plt.text(0.5, 0.5, "No Results", size=30,
+                     ha="center", va="center",
+                     bbox=dict(boxstyle="round",
+                               ec=(1., 0.5, 0.5),
+                               fc=(1., 0.8, 0.8),))
+            plt.rcParams['axes.facecolor'] = (0.22, 0.23, 0.31, 1)
+            plt.rcParams['axes.edgecolor'] = (0.22, 0.23, 0.31, 1)
+            #plt.xlabel("")
+            #plt.ylabel("Count", color='silver')
+            plt.tick_params(colors='silver')
+            plt.savefig(img, format='png', facecolor=(
+                0.22, 0.23, 0.31, 1), edgecolor=(0.22, 0.23, 0.31, 1))
+            img.seek(0)
+            figure_url = base64.b64encode(img.getvalue()).decode()
+            plt.close()
+            self.topic_count_plot = 'data:image/png;base64,{}'.format(figure_url)
+
+        return self.topic_count_plot
+
+    
     def plot_popular_hashtags(self, hashtags, max_hash=10):
         '''Get the hashtag column and plot the popular hashtags
         '''
@@ -396,9 +494,9 @@ class TweetDetective():
             plt.rcParams['font.family'] = "arial"
             plt.rcParams['axes.facecolor'] = (0.22, 0.23, 0.31, 1)
             plt.rcParams['axes.edgecolor'] = (0.22, 0.23, 0.31, 1)
-            plt.xlabel("")
-            plt.ylabel("Count", color='silver')
             plt.tick_params(colors='silver')
+            plt.xlabel("")
+            plt.ylabel("Count", color='silver')         
             plt.tight_layout()
             plt.savefig(img, format='png', facecolor=(
                 0.22, 0.23, 0.31, 1), edgecolor=(0.22, 0.23, 0.31, 1))
@@ -465,6 +563,11 @@ class TweetDetective():
             self.plot_sentiment_analysis(self.tweets_df['sentiment'])
             self.plot_popular_hashtags(self.tweets_df['hashtags'])
             self.find_top_pos_neg_tweets()
+            
+            logger.info('Running topic modeling...')
+            self.tweets_df['topic'], self.words_per_topic = self.topic_modeling(self.tweets_df['clean_text'])
+            self.plot_topic_wordcloud(self.tweets_df)
+            self.plot_topic_count(self.tweets_df['topic'])
             return 0
 
         except Exception as e:
