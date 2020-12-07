@@ -75,6 +75,11 @@ def index():
                            top_negative_tweets1_3=TWEETDETECTIVE1.top_negative_tweets.iloc[2],
                            top_negative_tweets1_4=TWEETDETECTIVE1.top_negative_tweets.iloc[3],
                            top_negative_tweets1_5=TWEETDETECTIVE1.top_negative_tweets.iloc[4],
+                           topic_wordcloud_1_1=TWEETDETECTIVE1.topic_wordcloud_pics[0],
+                           topic_wordcloud_1_2=TWEETDETECTIVE1.topic_wordcloud_pics[1],
+                           topic_wordcloud_1_3=TWEETDETECTIVE1.topic_wordcloud_pics[2],
+                           topic_wordcloud_1_4=TWEETDETECTIVE1.topic_wordcloud_pics[3],
+                           topic_count_1=TWEETDETECTIVE1.topic_count_plot,
                            search_query2=SEARCH_QUERY2,
                            sentiment_plot2=TWEETDETECTIVE2.sentiment_plot,
                            num_of_tweets2=TWEETDETECTIVE2.num_of_tweets,
@@ -88,7 +93,12 @@ def index():
                            top_negative_tweets2_2=TWEETDETECTIVE2.top_negative_tweets.iloc[1],
                            top_negative_tweets2_3=TWEETDETECTIVE2.top_negative_tweets.iloc[2],
                            top_negative_tweets2_4=TWEETDETECTIVE2.top_negative_tweets.iloc[3],
-                           top_negative_tweets2_5=TWEETDETECTIVE2.top_negative_tweets.iloc[4])
+                           top_negative_tweets2_5=TWEETDETECTIVE2.top_negative_tweets.iloc[4],
+                           topic_wordcloud_2_1=TWEETDETECTIVE2.topic_wordcloud_pics[0],
+                           topic_wordcloud_2_2=TWEETDETECTIVE2.topic_wordcloud_pics[1],
+                           topic_wordcloud_2_3=TWEETDETECTIVE2.topic_wordcloud_pics[2],
+                           topic_wordcloud_2_4=TWEETDETECTIVE2.topic_wordcloud_pics[3],
+                           topic_count_2=TWEETDETECTIVE2.topic_count_plot)
 
 @blueprint.route('/<template>')
 def route_template(template):
