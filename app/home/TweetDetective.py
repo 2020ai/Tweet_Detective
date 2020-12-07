@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
 import nltk
+nltk.downloader.download('vader_lexicon')
 import re
 import io
 import base64
