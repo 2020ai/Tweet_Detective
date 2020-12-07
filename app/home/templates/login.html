@@ -7,79 +7,129 @@
 
 {% block content %}
 
-<div class="page-inner">
-    <div class="page-header">
-        <h4 class="page-title">Login</h4>
-        <ul class="breadcrumbs">
-            <li class="nav-home">
-                <a href="#">
-                    <i class="flaticon-home"></i>
-                </a>
-            </li>
-            <li class="separator">
-                <i class="flaticon-right-arrow"></i>
-            </li>
-            <li class="nav-item">
-                <a href="#">Authentication</a>
-            </li>
-            <li class="separator">
-                <i class="flaticon-right-arrow"></i>
-            </li>
-            <li class="nav-item">
-                <a href="#">Login</a>
-            </li>
-        </ul>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-title">
-                        <span>
-                            Add your credentials
-                        </span>
-                    </div>
+<div class="content">
+    <div class="panel-header bg-primary-gradient">
+        <div class="page-inner py-5">
+            <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
+                <div>
+                    <h1 class="text-white pb-2 fw-bold">Tweet Detective</h1>
+                    <h4 class="text-white pb-2">This app gives you information from the latest tweets about a word of choice.
+                    It shows if the tweets are positive or negative and
+                    what is the hot topics people are talking about.
+                    You can either enter one search term or two search terms and compare them.
+                    </h4>
+                    <!-- <h5 class="text-white op-7 mb-2">Free Bootstrap 4 Admin Dashboard</h5> -->
                 </div>
+                <!-- <div class="ml-md-auto py-2 py-md-0">
+						<a href="#" class="btn btn-white btn-border btn-round mr-2">Manage</a>
+						<a href="#" class="btn btn-secondary btn-round">Add Customer</a>
+					</div> -->
+            </div>
+        </div>
+    </div>
+    <div class="page-inner">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <span>
+                                <h4 class="text-white pb-2 fw-bold" >Enter you search term(s)</h4>
+                                <h4 class="text-white pb-2">Here are some examples to give you an idea of what to seach: 
+                                    Walmart vs Costco, RBC vs Scotia, latest Netflix movies, etc</h4>
+                            </span>
+                        </div>
+                    </div>
 
-                <form method="post" action="#">
+                    <form method="post" action="#">
 
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-6 col-lg-4">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 col-lg-4">
 
-                                <div class="form-group">
-                                    <div class="input-group mb-3">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text">
-                                                <i class="icon-user"></i>
-                                            </span>
+                                    <div class="form-group">
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                            </div>
+                                            <input type="text" class="form-control" id="search1" name="search1" placeholder="Search1">
                                         </div>
-                                        <input type="text" class="form-control" placeholder="Username">
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                            </div>
+                                            <input type="text" class="form-control" id="search2" name="search2" placeholder="Search2">
+                                        </div>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                        <div class="card-action">
+                            <button type="submit" class="btn btn-success">Submit</button>
+                            <h4 class="text-white pb-2"> ........................</h4>
+                            <h4 class="text-white pb-2">Please wait a few decades for the tweets to be analyzed! Just kidding only about a minute ...</h4>
+                            <!-- &nbsp; &nbsp;
+                            <span>Not a member?</span> Please <a href="/register.html" >Register</a> -->
+                        </div>
 
-                                <div class="form-group">
-                                    <div class="input-group mb-3">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text">
-                                                <i class="icon-lock"></i>
-                                            </span>
+                    </form>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="card-head-row">
+                                        <div class="card-title">Auther</div>
+                                        <div class="card-tools">
                                         </div>
-                                        <input type="password" class="form-control" placeholder="Password">
                                     </div>
                                 </div>
-
+                                <div class="card-body">
+                                    <img src="/static/assets/img/SA-ph.jpg" style="width:200px;height:200px; float:left" >
+                                </div>
+                                <div class="card-body">
+                                    <div class="username">
+                                        <h4>Sara Alizadeh</h4>
+                                    </div>
+                                    <a class="nav-link" target="_blank" href="https://www.linkedin.com/in/sara-alizadeh72/">
+                                        Linkedin
+                                    </a>
+                                    <a class="nav-link" target="_blank" href="https://github.com/saro0o00oo">
+                                        GitHub
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="card-head-row">
+                                        <div class="card-title"> Auther</div>
+                                        <div class="card-tools">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <img src="/static/assets/img/SL-ph2.png" style="width:200px;height:200px; float:left" >
+                                </div>
+                                <div class="card-body">
+                                    <div class="username">
+                                        <h4>Shayan Liaghat</h4>
+                                    </div>
+                                    <a class="nav-link" target="_blank" href="https://www.linkedin.com/in/shayanliaghat/">
+                                        Linkedin
+                                    </a>
+                                    <a class="nav-link" target="_blank" href="https://github.com/ShayanLiaghat">
+                                        GitHub
+                                    </a>
+                                </div>
+                                
+                                
+                                
                             </div>
                         </div>
                     </div>
-                    <div class="card-action">
-                        <button type="submit" class="btn btn-success">Submit</button>
-                        &nbsp; &nbsp;
-                        <span>Not a member?</span> Please <a href="/register.html" >Register</a>
-                    </div>
 
-                </form>
-
+                </div>
             </div>
         </div>
     </div>

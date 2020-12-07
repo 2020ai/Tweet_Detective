@@ -276,6 +276,10 @@ body[data-background-color="dark"] .demo-icon .icon-class {
 	background-color: #f1f1f1;
 }
 
+.image-one {
+  border-radius: 50%;
+}
+
 @media screen and (max-width: 550px){
 	.table-typo tr td{
 		display: flex;
