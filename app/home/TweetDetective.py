@@ -15,6 +15,8 @@ from nltk.sentiment.vader import SentimentIntensityAnalyzer
 from wordcloud import WordCloud, ImageColorGenerator
 from PIL import Image
 
+nltk.downloader.download('vader_lexicon')
+nltk.downloader.download('stopwords')
 
 # Twitter API credentials
 ACCESS_TOKEN = ["761441357315440640-suCCQJo6kuufi3PmcYUl2y9kNyYb8C0",
