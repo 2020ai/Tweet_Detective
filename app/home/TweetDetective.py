@@ -586,9 +586,11 @@ class TweetDetective():
 
         try:
             self.search_query = ''.join(search_query.split())
+            logger.info('search term: {}'.format(self.search_query))
             tweets_list = self.collect_tweets(
-                search_query=search_query, geocode="49.525238,-93.874023,4000km")
-            self.tweets_df = self.make_dataframe(tweets_list, search_query)
+                search_query=self.search_query, geocode="49.525238,-93.874023,4000km")
+            self.tweets_df = self.make_dataframe(
+                tweets_list, self.search_query)
             self.tweets_df['clean_text'] = self.tweets_df['tweet_text'].apply(
                 lambda text: self.clean_tweet_text(text, punc_flag=False,
                                                    number_flag=False, special_char_flag=False))
