@@ -5,7 +5,6 @@ Copyright (c) 2019 - present AppSeed.us
 
 from app.home import blueprint
 from flask import render_template, redirect, url_for, request
-from app import login_manager
 from jinja2 import TemplateNotFound
 from app.home import TweetDetective
 

@@ -17,10 +17,13 @@ from PIL import Image
 
 
 # Twitter API credentials
-ACCESS_TOKEN = "761441357315440640-suCCQJo6kuufi3PmcYUl2y9kNyYb8C0"
-ACCESS_TOKEN_SECRET = "nN4nX0LhlUZHN31LLYU1neOxg7elvb4LIo9KkX7gMDMaN"
-API_KEY = "oMlZlYVi6MerYj7SZzcYWvgVr"
-API_SECRET_KEY = "OW8cYRS69LUQ1gD5rKULGi4QtuBoj0OX5hRyJI5HVBbzTLZzam"
+ACCESS_TOKEN = ["761441357315440640-suCCQJo6kuufi3PmcYUl2y9kNyYb8C0",
+                "787838102219984896-FM1snnheZBR9bDKHp8WfQQ8LOPHzBQO"]
+ACCESS_TOKEN_SECRET = ["nN4nX0LhlUZHN31LLYU1neOxg7elvb4LIo9KkX7gMDMaN",
+                       "CRJnu5dNbScNXs3ZS1wti63UZWMZN3TNVllp6rjVs5jXu"]
+API_KEY = ["oMlZlYVi6MerYj7SZzcYWvgVr", "RVgFvwUTzge2JUK6yuav4ZYoM"]
+API_SECRET_KEY = ["OW8cYRS69LUQ1gD5rKULGi4QtuBoj0OX5hRyJI5HVBbzTLZzam",
+                  "XJaKlhIw5sTGxlgDnftJ6x7eOh81203QVRpQkjhqtbrhVHcBIx"]
 
 # extra stop words
 STOP_WORDS = ["'d", "'ll", "'re", "'s", "'ve", 'could', 'might', 'must',
@@ -79,12 +82,31 @@ class TweetDetective():
 
         logger.info('Collecting tweets using twitter api...')
         # Authentication
+        api_key = API_KEY[0]
+        api_secret_key = API_SECRET_KEY[0]
+        access_token = ACCESS_TOKEN[0]
+        access_token_secret = ACCESS_TOKEN_SECRET[0]
+        access_keys_flag = True #The ability to use 2 set of authentication
+
         if search_query=='':
             tweets_list = []
         else:
+            rate_limit = 1  # There is a limit of 100 API calls in the hour
+            if rate_limit < 1:
+                    # Rate limit time out needs to be added here in order to
+                    # collect data exceeding available rate-limit
+                    if access_keys_flag:
+                        api_key = API_KEY[1]
+                        api_secret_key = API_SECRET_KEY[1]
+                        access_token = ACCESS_TOKEN[1]
+                        access_token_secret = ACCESS_TOKEN_SECRET[1]
+                        access_keys_flag = False
+                    else:
+                        logger.exception('{} Rate limit!'.format(rate_limit))
             try:
-                twitter_obj = Twython(API_KEY, API_SECRET_KEY,
-                                    ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
+                
+                twitter_obj = Twython(api_key, api_secret_key,
+                                      access_token, access_token_secret)
 
                 # Use Twitter standard API search
                 tweet_result = twitter_obj.search(q=search_query, geocode=geocode,
@@ -95,6 +117,8 @@ class TweetDetective():
             except Exception as e:
                 logger.exception(e)
                 return -1
+            rate_limit = int(twitter_obj.get_lastfunction_header(
+                'x-rate-limit-remaining'))
 
             # In order to prevent redundant tweets explained here
             # https://developer.twitter.com/en/docs/tweets/timelines/guides/working-with-timelines
@@ -103,13 +127,20 @@ class TweetDetective():
             # relative to the IDs of tweets it has already processed.
             tweets_list = tweet_result['statuses']
             i = 0  # num of iteration through each page
-            rate_limit = 1  # There is a limit of 100 API calls in the hour
+            #rate_limit = 1  # There is a limit of 100 API calls in the hour
             while tweet_result['statuses'] and i < num_of_page:
                 if rate_limit < 1:
                     # Rate limit time out needs to be added here in order to
                     # collect data exceeding available rate-limit
-                    print(str(rate_limit)+' Rate limit!')
-                    break
+                    if access_keys_flag:
+                        api_key = API_KEY[1]
+                        api_secret_key = API_SECRET_KEY[1]
+                        access_token = ACCESS_TOKEN[1]
+                        access_token_secret = ACCESS_TOKEN_SECRET[1]
+                        access_keys_flag = False
+                    else:
+                        logger.exception('{} Rate limit!'.format(rate_limit))
+                        break
                 max_id = tweet_result['statuses'][-1]['id']-1
 
                 try:
@@ -315,23 +346,27 @@ class TweetDetective():
         and the highest probability words per topic
         '''
 
-        #create the bags of words
-        tweets_bow, cv_feature_names = self.create_bag_of_words(tweets, max_df=max_df,
-                                                             min_df=min_df,
-                                                             max_features=max_features)
+        words_per_topic = {}
+        if len(tweets) > 0:
+            #create the bags of words
+            tweets_bow, cv_feature_names = self.create_bag_of_words(tweets, max_df=max_df,
+                                                                min_df=min_df,
+                                                                max_features=max_features)
 
-        #create an instace of LatentDirichletAllocation
-        LDA=LatentDirichletAllocation(n_components=num_components, random_state=random_state)
-        LDA.fit(tweets_bow)
+            #create an instace of LatentDirichletAllocation
+            LDA=LatentDirichletAllocation(n_components=num_components, random_state=random_state)
+            LDA.fit(tweets_bow)
 
-        #grab the highest probability words per topic
-        words_per_topic={}
-        for index, topic in enumerate(LDA.components_):
-            words_per_topic[index]=[cv_feature_names[i]
-                                    for i in topic.argsort()[-20:]]
+            #grab the highest probability words per topic
+            
+            for index, topic in enumerate(LDA.components_):
+                words_per_topic[index]=[cv_feature_names[i]
+                                        for i in topic.argsort()[-20:]]
+            topic_results = LDA.transform(tweets_bow)
+            topics = topic_results.argmax(axis=1)
+        else:
+            topics = []
 
-        topic_results = LDA.transform(tweets_bow)
-        topics = topic_results.argmax(axis=1)
         return topics, words_per_topic
 
     def plot_topic_wordcloud(self, tweets_df):
@@ -350,7 +385,7 @@ class TweetDetective():
                 text_all = ''
                 text_all = ' '.join(text for text in tweets_df[tweets_df['topic']==i]['clean_text'])
                 wc.generate(text_all)
-                plt.figure(figsize=(15, 15))
+                plt.figure(figsize=(10, 10))
                 plt.imshow(wc, interpolation='bilinear')
                 plt.tight_layout(pad=0)
                 plt.axis('off')
@@ -362,16 +397,15 @@ class TweetDetective():
                 self.topic_wordcloud_pics.append('data:image/png;base64,{}'.format(figure_url))
         else:
             img = io.BytesIO()
-            plt.figure(figsize=(6, 4))
-            plt.text(0.5, 0.5, "No Results", size=30,
+            plt.figure(figsize=(10, 10))
+            plt.text(0.5, 0.5, "Not Enough Tweets Found \n for the Past Few Days", size=40,
                      ha="center", va="center",
                      bbox=dict(boxstyle="round",
                                ec=(1., 0.5, 0.5),
                                fc=(1., 0.8, 0.8),))
             plt.rcParams['axes.facecolor'] = (0.22, 0.23, 0.31, 1)
             plt.rcParams['axes.edgecolor'] = (0.22, 0.23, 0.31, 1)
-            #plt.xlabel("")
-            #plt.ylabel("Count", color='silver')
+            plt.axis('off')
             plt.tick_params(colors='silver')
             plt.savefig(img, format='png', facecolor=(
                 0.22, 0.23, 0.31, 1), edgecolor=(0.22, 0.23, 0.31, 1))
@@ -388,9 +422,12 @@ class TweetDetective():
         logger.info('Creating a plot of all topic counts...')
         
         if len(topics) > 0:
+            topic_dict = {0:'Topic 1', 1:'Topic 2', 2:'Topic 3', 3:'Topic 4'}
+            topics = topics.map(topic_dict)
             img = io.BytesIO()
             plt.figure(figsize=(6, 3))
-            sns.countplot(topics, palette="RdPu")
+            sns.countplot(topics, palette="RdPu", order=[
+                          'Topic 1', 'Topic 2',  'Topic 3', 'Topic 4'])
             plt.rcParams['font.family'] = "arial"
             plt.rcParams['axes.facecolor'] = (0.22, 0.23, 0.31, 1)
             plt.rcParams['axes.edgecolor'] = (0.22, 0.23, 0.31, 1)
@@ -406,16 +443,15 @@ class TweetDetective():
             self.topic_count_plot = 'data:image/png;base64,{}'.format(figure_url)
         else:
             img = io.BytesIO()
-            plt.figure(figsize=(6, 4))
-            plt.text(0.5, 0.5, "No Results", size=30,
+            plt.figure(figsize=(6, 3))
+            plt.text(0.5, 0.5, "Not Enough Tweets Found \nfor the Past Few Days", size=20,
                      ha="center", va="center",
                      bbox=dict(boxstyle="round",
                                ec=(1., 0.5, 0.5),
                                fc=(1., 0.8, 0.8),))
             plt.rcParams['axes.facecolor'] = (0.22, 0.23, 0.31, 1)
             plt.rcParams['axes.edgecolor'] = (0.22, 0.23, 0.31, 1)
-            #plt.xlabel("")
-            #plt.ylabel("Count", color='silver')
+            plt.axis('off')
             plt.tick_params(colors='silver')
             plt.savefig(img, format='png', facecolor=(
                 0.22, 0.23, 0.31, 1), edgecolor=(0.22, 0.23, 0.31, 1))
@@ -460,16 +496,15 @@ class TweetDetective():
             self.hashtag_plot = 'data:image/png;base64,{}'.format(figure_url)
         else:
             img = io.BytesIO()
-            plt.figure(figsize=(6, 4))
-            plt.text(0.5, 0.5, "No Results", size=30,
+            plt.figure(figsize=(10, 4))
+            plt.text(0.5, 0.5, "Not Enough Tweets Found \nfor the Past Few Days", size=25,
                     ha="center", va="center",
                     bbox=dict(boxstyle="round",
                             ec=(1., 0.5, 0.5),
                             fc=(1., 0.8, 0.8),))
             plt.rcParams['axes.facecolor'] = (0.22, 0.23, 0.31, 1)
             plt.rcParams['axes.edgecolor'] = (0.22, 0.23, 0.31, 1)
-            #plt.xlabel("")
-            #plt.ylabel("Count", color='silver')
+            plt.axis('off')
             plt.tick_params(colors='silver')
             plt.savefig(img, format='png', facecolor=(
                 0.22, 0.23, 0.31, 1), edgecolor=(0.22, 0.23, 0.31, 1))
@@ -506,16 +541,15 @@ class TweetDetective():
             self.sentiment_plot = 'data:image/png;base64,{}'.format(figure_url)
         else:
             img = io.BytesIO()
-            plt.figure(figsize=(6, 4))
-            plt.text(0.5, 0.5, "No Results", size=30,
+            plt.figure(figsize=(6, 3))
+            plt.text(0.5, 0.5, "Not Enough Tweets Found \nfor the Past Few Days", size=20,
                      ha="center", va="center",
                      bbox=dict(boxstyle="round",
                                ec=(1., 0.5, 0.5),
                                fc=(1., 0.8, 0.8),))
             plt.rcParams['axes.facecolor'] = (0.22, 0.23, 0.31, 1)
             plt.rcParams['axes.edgecolor'] = (0.22, 0.23, 0.31, 1)
-            #plt.xlabel("")
-            #plt.ylabel("Count", color='silver')
+            plt.axis('off')
             plt.tick_params(colors='silver')
             plt.savefig(img, format='png', facecolor=(
                 0.22, 0.23, 0.31, 1), edgecolor=(0.22, 0.23, 0.31, 1))
@@ -533,8 +567,10 @@ class TweetDetective():
         '''
         logger.info('Finding the top pos and neg tweets...')
         if len(self.tweets_df['sentiment_score']) < top_num:
-            self.top_negative_tweets = pd.Series(['No Results']*5)
-            self.top_positive_tweets = pd.Series(['No Results']*5)
+            self.top_negative_tweets = pd.Series(
+                ['Not Enough Tweets Found for the Past Few Days']*5)
+            self.top_positive_tweets = pd.Series(
+                ['Not Enough Tweets Found for the Past Few Days']*5)
         else:
             self.top_negative_tweets = self.tweets_df['tweet_text'][self.tweets_df['sentiment_score'].argsort()[
                 :top_num]]

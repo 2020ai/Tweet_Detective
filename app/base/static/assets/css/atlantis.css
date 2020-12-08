@@ -8959,4 +8959,10 @@ body {
   background: -webkit-linear-gradient(legacy-direction(-45deg), #E80A15, #F25961) !important;
   background: linear-gradient(-45deg, #E80A15, #F25961) !important; }
 
+.text-one {
+	font-family:monospace;
+            width: 200px;
+    text-align: justify;/* For Edge */
+  /* text-align-last: center; */
+}
 /*# sourceMappingURL=atlantis.css.map */
