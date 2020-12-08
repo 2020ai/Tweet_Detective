@@ -585,7 +585,7 @@ class TweetDetective():
         '''
 
         try:
-            self.search_query = search_query
+            self.search_query = ''.join(search_query.split())
             tweets_list = self.collect_tweets(
                 search_query=search_query, geocode="49.525238,-93.874023,4000km")
             self.tweets_df = self.make_dataframe(tweets_list, search_query)
