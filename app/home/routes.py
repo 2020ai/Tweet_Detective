@@ -60,7 +60,7 @@ def index():
 
     #return render_template('index.html', segment='index')
     return render_template('index.html', segment='index', 
-                           search_query1=SEARCH_QUERY1, 
+                           search_query1=TWEETDETECTIVE1.search_query,
                            sentiment_plot1=TWEETDETECTIVE1.sentiment_plot,
                            num_of_tweets1=TWEETDETECTIVE1.num_of_tweets,
                            hashtag_plot1=TWEETDETECTIVE1.hashtag_plot,
@@ -79,7 +79,7 @@ def index():
                            topic_wordcloud_1_3=TWEETDETECTIVE1.topic_wordcloud_pics[2],
                            topic_wordcloud_1_4=TWEETDETECTIVE1.topic_wordcloud_pics[3],
                            topic_count_1=TWEETDETECTIVE1.topic_count_plot,
-                           search_query2=SEARCH_QUERY2,
+                           search_query2=TWEETDETECTIVE2.search_query,
                            sentiment_plot2=TWEETDETECTIVE2.sentiment_plot,
                            num_of_tweets2=TWEETDETECTIVE2.num_of_tweets,
                            hashtag_plot2=TWEETDETECTIVE2.hashtag_plot,
