@@ -1,82 +1,27 @@
-# [Flask Dashboard Atlantis Dark](https://appseed.us/admin-dashboards/flask-dashboard-atlantis-dark)
+# [Tweet Detective](http://tweetdetective.eba-phmcemwv.us-east-2.elasticbeanstalk.com/)
 
-> Open-Source Flask Dashboard seed project provided by AppSeed on top of **Atlantis Lite** a modern and free Bootstrap 4 Template - Features:
+## Description
+<img src="app/base/static/assets/img/screencapture-tweetdetective-page1.png">
 
-- UI Kit: **Atlantis Lite** (Dark Version) provided by **ThemeKita**
-- DBMS: SQLite, PostgreSQL (production) 
-- DB Tools: SQLAlchemy ORM, Alembic (schema migrations)
-- Modular design with **Blueprints**
-- Session-Based authentication (via **flask_login**), Forms validation
-- Deployment scripts: Docker, Gunicorn / Nginx, Heroku
-- Support via **Github** (issues tracker) and [Discord](https://discord.gg/fZC6hup).
+This Readme file has the following sections:
+1.  [Project Organization](#ProjectOrganization)
+2.  [Flask](#Flask)
+3.  [AWS Deployment](#AWSDeployment)
+4.  [Future Work](#FutureWork)
 
-> Links
+## 1. Project Organization <a id='ProjectOrganization'></a>
 
-- [Flask Dashboard Atlantis Dark](https://appseed.us/admin-dashboards/flask-dashboard-atlantis-dark) - product page
-- [Flask Dashboard Atlantis Dark - Demo](https://flask-dashboard-atlantis-dark.appseed.us/) - LIVE Deployment
-- [Atlantis Lite - UI Documentation](https://atlantis-lite.appseed.us/)
+
+
 
 <br />
 
-## Want more? Go PRO!
+## 2. Flask <a id='Flask'></a>
 
-PRO versions include **Premium UI Kits**, Lifetime updates and **24/7 LIVE Support** (via [Discord](https://discord.gg/fZC6hup))
-
-| [Flask AtlantisDark PRO](https://appseed.us/admin-dashboards/flask-dashboard-atlantis-dark-pro) | [Flask Dashboard Black PRO](https://appseed.us/admin-dashboards/flask-dashboard-black-pro) | [Flask Dashboard Argon PRO](https://appseed.us/admin-dashboards/flask-dashboard-argon-pro) |
-| --- | --- | --- |
-| [![Flask AtlantisDark PRO](https://github.com/app-generator/flask-dashboard-atlantis-dark-pro/blob/master/media/flask-dashboard-atlantis-dark-pro-screen.png)](https://appseed.us/admin-dashboards/flask-dashboard-atlantis-dark-pro) | [![Flask Dashboard Black PRO](https://raw.githubusercontent.com/app-generator/flask-dashboard-black-pro/master/media/flask-dashboard-black-pro-screen.png)](https://appseed.us/admin-dashboards/flask-dashboard-black-pro) | [![Flask Dashboard Argon PRO](https://raw.githubusercontent.com/app-generator/flask-dashboard-argon-pro/master/media/flask-dashboard-argon-pro-screen.png)](https://appseed.us/admin-dashboards/flask-dashboard-argon-pro)
-
-<br />
-<br />
-
-![Flask Dashboard Atlantis - Template project provided by AppSeed.](https://raw.githubusercontent.com/app-generator/flask-dashboard-atlantis-dark/master/media/flask-dashboard-atlantis-dark-intro.gif)
 
 <br />
 
-## How to use it
-
-```bash
-$ # Get the code
-$ git clone https://github.com/app-generator/flask-dashboard-atlantis-dark.git
-$ cd flask-dashboard-atlantis-dark
-$
-$ # Virtualenv modules installation (Unix based systems)
-$ virtualenv env
-$ source env/bin/activate
-$
-$ # Virtualenv modules installation (Windows based systems)
-$ # virtualenv env
-$ # .\env\Scripts\activate
-$
-$ # Install modules - SQLite Database
-$ pip3 install -r requirements.txt
-$
-$ # OR with PostgreSQL connector
-$ # pip install -r requirements-pgsql.txt
-$
-$ # Set the FLASK_APP environment variable
-$ (Unix/Mac) export FLASK_APP=run.py
-$ (Windows) set FLASK_APP=run.py
-$ (Powershell) $env:FLASK_APP = ".\run.py"
-$
-$ # Set up the DEBUG environment
-$ # (Unix/Mac) export FLASK_ENV=development
-$ # (Windows) set FLASK_ENV=development
-$ # (Powershell) $env:FLASK_ENV = "development"
-$
-$ # Start the application (development mode)
-$ # --host=0.0.0.0 - expose the app on all network interfaces (default 127.0.0.1)
-$ # --port=5000    - specify the app port (default 5000)  
-$ flask run --host=0.0.0.0 --port=5000
-$
-$ # Access the dashboard in browser: http://127.0.0.1:5000/
-```
-
-> Note: To use the app, please access the registration page and create a new user. After authentication, the app will unlock the private pages.
-
-<br />
-
-## Code-base structure
+### 2.1. Code-base structure
 
 The project is coded using blueprints, app factory pattern, dual configuration profile (development and production) and an intuitive structure presented bellow:
 
@@ -97,7 +42,7 @@ The project is coded using blueprints, app factory pattern, dual configuration p
    |
    |-- .env                      # Inject Configuration via Environment
    |-- config.py                 # Set up the app
-   |-- run.py                    # Start the app - WSGI gateway
+   |-- application.py                    # Start the app - WSGI gateway
    |
    |-- ************************************************************************
 ```
@@ -106,7 +51,7 @@ The project is coded using blueprints, app factory pattern, dual configuration p
 
 > The bootstrap flow
 
-- `run.py` loads the `.env` file
+- `application.py` loads the `.env` file
 - Initialize the app using the specified profile: *Debug* or *Production*
   - If env.DEBUG is set to *True* the SQLite storage is used
   - If env.DEBUG is set to *False* the specified DB driver is used (MySql, PostgreSQL)
@@ -190,23 +135,41 @@ The *Home* blueprint handles UI Kit pages for authenticated users. This is the p
 
 <br />
 
-## Deployment
+### 2.2. Deployment
+
+#### 2.2.1. How to run the app locally:
+```bash
+$ # Get the code
+$ cd tweetDetective_Deployment
+$
+$ # Virtualenv modules installation (Unix based systems)
+$ virtualenv env
+$ source env/bin/activate
+$
+$ # Install modules - SQLite Database
+$ pip3 install -r requirements.txt
+$
+$ # Set the FLASK_APP environment variable
+$ (Unix/Mac) export FLASK_APP=run.py
+$
+$ # Set up the DEBUG environment
+$ (Unix/Mac) export FLASK_ENV=development
+$
+$ # Start the application (development mode)
+$ flask run --host=0.0.0.0 --port=5000
+$
+$ # Access the dashboard in browser: http://127.0.0.1:5000/
+```
+
 
 The app is provided with a basic configuration to be executed in [Docker](https://www.docker.com/), [Heroku](https://www.heroku.com/), [Gunicorn](https://gunicorn.org/), and [Waitress](https://docs.pylonsproject.org/projects/waitress/en/stable/).
 
 <br />
 
-### [Docker](https://www.docker.com/) execution
+#### 2.2.2. [Docker](https://www.docker.com/) execution
 ---
 
 The application can be easily executed in a docker container. The steps:
-
-> Get the code
-
-```bash
-$ git clone https://github.com/app-generator/flask-dashboard-atlantis-dark.git
-$ cd flask-dashboard-atlantis-dark
-```
 
 > Start the app in Docker
 
@@ -216,82 +179,15 @@ $ sudo docker-compose pull && sudo docker-compose build && sudo docker-compose u
 
 Visit `http://localhost:5005` in your browser. The app should be up & running.
 
-<br />
-
-### [Heroku](https://www.heroku.com/)
----
-
-Steps to deploy on **Heroku**
-
-- [Create a FREE account](https://signup.heroku.com/) on Heroku platform
-- [Install the Heroku CLI](https://devcenter.heroku.com/articles/getting-started-with-python#set-up) that match your OS: Mac, Unix or Windows
-- Open a terminal window and authenticate via `heroku login` command
-- Clone the sources and push the project for LIVE deployment
-
-```bash
-$ # Clone the source code:
-$ git clone https://github.com/app-generator/flask-dashboard-atlantis-dark.git
-$ cd flask-dashboard-atlantis-dark
-$
-$ # Check Heroku CLI is installed
-$ heroku -v
-heroku/7.25.0 win32-x64 node-v12.13.0 # <-- All good
-$
-$ # Check Heroku CLI is installed
-$ heroku login
-$ # this commaond will open a browser window - click the login button (in browser)
-$
-$ # Create the Heroku project
-$ heroku create
-$
-$ # Trigger the LIVE deploy
-$ git push heroku master
-$
-$ # Open the LIVE app in browser
-$ heroku open
-```
 
 <br />
 
-### [Gunicorn](https://gunicorn.org/)
----
 
-Gunicorn 'Green Unicorn' is a Python WSGI HTTP Server for UNIX.
+## 3. AWS Deployment <a id='AWSDeployment'></a>
 
-> Install using pip
 
-```bash
-$ pip install gunicorn
-```
-> Start the app using gunicorn binary
 
-```bash
-$ gunicorn --bind 0.0.0.0:8001 run:app
-Serving on http://localhost:8001
-```
-
-Visit `http://localhost:8001` in your browser. The app should be up & running.
-
-<br />
-
-### [Waitress](https://docs.pylonsproject.org/projects/waitress/en/stable/)
----
-
-Waitress (Gunicorn equivalent for Windows) is meant to be a production-quality pure-Python WSGI server with very acceptable performance. It has no dependencies except ones that live in the Python standard library.
-
-> Install using pip
-
-```bash
-$ pip install waitress
-```
-> Start the app using [waitress-serve](https://docs.pylonsproject.org/projects/waitress/en/stable/runner.html)
-
-```bash
-$ waitress-serve --port=8001 run:app
-Serving on http://localhost:8001
-```
-
-Visit `http://localhost:8001` in your browser. The app should be up & running.
+## 4. Future Work <a id='FutureWork'></a>
 
 <br />
 
@@ -300,8 +196,3 @@ Visit `http://localhost:8001` in your browser. The app should be up & running.
 - [Flask Framework](https://www.palletsprojects.com/p/flask/) - The offcial website
 - [Boilerplate Code](https://appseed.us/boilerplate-code) - Index provided by **AppSeed**
 - [Boilerplate Code](https://github.com/app-generator/boilerplate-code) - Index published on Github
-
-<br />
-
----
-[Flask Dashboard Atlantis Dark](https://appseed.us/admin-dashboards/flask-dashboard-atlantis-dark) - Provided by **AppSeed** [Web App Generator](https://appseed.us/app-generator).
