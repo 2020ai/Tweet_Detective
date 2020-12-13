@@ -1,6 +1,9 @@
 # [Tweet Detective](http://tweetdetective.eba-phmcemwv.us-east-2.elasticbeanstalk.com/)
 
 ## Description
+
+An end-to-end web application using Flask, Docker, and Elastic Beanstalk by scraping tweets and providing in-depth insights about specific businesses that could save business owners hours of tweets reading and analysing.
+
 <img src="app/base/static/assets/img/screencapture-tweetdetective-page1.png">
 
 This Readme file has the following sections:
@@ -57,7 +60,7 @@ The project is coded using blueprints, app factory pattern, dual configuration p
   - If env.DEBUG is set to *False* the specified DB driver is used (MySql, PostgreSQL)
 - Call the app factory method `create_app` defined in app/__init__.py
 - Redirect the guest users to Login page
-- Unlock the pages served by *home* blueprint for authenticated users
+- Unlock the pages served by *home* blueprint
 
 <br />
 
@@ -96,7 +99,7 @@ The *Base* blueprint handles the authentication (routes and forms) and assets ma
    |
    |-- .env                                      # Inject Configuration via Environment
    |-- config.py                                 # Set up the app
-   |-- run.py                                    # Start the app - WSGI gateway
+   |-- application.py                                    # Start the app - WSGI gateway
    |
    |-- ************************************************************************
 ```
@@ -105,7 +108,7 @@ The *Base* blueprint handles the authentication (routes and forms) and assets ma
 
 > App / Home Blueprint
 
-The *Home* blueprint handles UI Kit pages for authenticated users. This is the private zone of the app - the structure is presented below:
+The *Home* blueprint handles UI Kit pages. This is the private zone of the app - the structure is presented below:
 
 ```bash
 < PROJECT ROOT >
@@ -128,7 +131,7 @@ The *Home* blueprint handles UI Kit pages for authenticated users. This is the p
    |
    |-- .env                           # Inject Configuration via Environment
    |-- config.py                      # Set up the app
-   |-- run.py                         # Start the app - WSGI gateway
+   |-- application.py                         # Start the app - WSGI gateway
    |
    |-- ************************************************************************
 ```
@@ -150,7 +153,7 @@ $ # Install modules - SQLite Database
 $ pip3 install -r requirements.txt
 $
 $ # Set the FLASK_APP environment variable
-$ (Unix/Mac) export FLASK_APP=run.py
+$ (Unix/Mac) export FLASK_APP=application.py
 $
 $ # Set up the DEBUG environment
 $ (Unix/Mac) export FLASK_ENV=development
