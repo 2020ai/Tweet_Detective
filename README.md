@@ -338,6 +338,9 @@ Optimizing the number of topics in topic modeling using Topic Coherence score by
 
 More data could be scrapped and collected from other resources such as google reviews or news channels, following by merging them all for a richer data distribution.
 
+### 4.6. Adding the Tweets' geolocation
+The geolocation of the tweets could be added on a world map using the users' location.
+
 <br />
 
 ## Credits & Links
