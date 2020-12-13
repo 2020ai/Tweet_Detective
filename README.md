@@ -1,82 +1,117 @@
-# [Flask Dashboard Atlantis Dark](https://appseed.us/admin-dashboards/flask-dashboard-atlantis-dark)
-
-> Open-Source Flask Dashboard seed project provided by AppSeed on top of **Atlantis Lite** a modern and free Bootstrap 4 Template - Features:
-
-- UI Kit: **Atlantis Lite** (Dark Version) provided by **ThemeKita**
-- DBMS: SQLite, PostgreSQL (production) 
-- DB Tools: SQLAlchemy ORM, Alembic (schema migrations)
-- Modular design with **Blueprints**
-- Session-Based authentication (via **flask_login**), Forms validation
-- Deployment scripts: Docker, Gunicorn / Nginx, Heroku
-- Support via **Github** (issues tracker) and [Discord](https://discord.gg/fZC6hup).
-
-> Links
-
-- [Flask Dashboard Atlantis Dark](https://appseed.us/admin-dashboards/flask-dashboard-atlantis-dark) - product page
-- [Flask Dashboard Atlantis Dark - Demo](https://flask-dashboard-atlantis-dark.appseed.us/) - LIVE Deployment
-- [Atlantis Lite - UI Documentation](https://atlantis-lite.appseed.us/)
+# [Tweet Detective](http://tweetdetective.eba-phmcemwv.us-east-2.elasticbeanstalk.com/)
 
 <br />
 
-## Want more? Go PRO!
+## Description
 
-PRO versions include **Premium UI Kits**, Lifetime updates and **24/7 LIVE Support** (via [Discord](https://discord.gg/fZC6hup))
+Tweet Detective is an end-to-end web application using Flask, Docker, and Elastic Beanstalk by scraping tweets and providing in-depth insights about specific businesses that could save business owners hours of tweets reading and analysing. The app can be accessed from the following link: http://tweetdetective.eba-phmcemwv.us-east-2.elasticbeanstalk.com/
 
-| [Flask AtlantisDark PRO](https://appseed.us/admin-dashboards/flask-dashboard-atlantis-dark-pro) | [Flask Dashboard Black PRO](https://appseed.us/admin-dashboards/flask-dashboard-black-pro) | [Flask Dashboard Argon PRO](https://appseed.us/admin-dashboards/flask-dashboard-argon-pro) |
-| --- | --- | --- |
-| [![Flask AtlantisDark PRO](https://github.com/app-generator/flask-dashboard-atlantis-dark-pro/blob/master/media/flask-dashboard-atlantis-dark-pro-screen.png)](https://appseed.us/admin-dashboards/flask-dashboard-atlantis-dark-pro) | [![Flask Dashboard Black PRO](https://raw.githubusercontent.com/app-generator/flask-dashboard-black-pro/master/media/flask-dashboard-black-pro-screen.png)](https://appseed.us/admin-dashboards/flask-dashboard-black-pro) | [![Flask Dashboard Argon PRO](https://raw.githubusercontent.com/app-generator/flask-dashboard-argon-pro/master/media/flask-dashboard-argon-pro-screen.png)](https://appseed.us/admin-dashboards/flask-dashboard-argon-pro)
 
-<br />
-<br />
 
-![Flask Dashboard Atlantis - Template project provided by AppSeed.](https://raw.githubusercontent.com/app-generator/flask-dashboard-atlantis-dark/master/media/flask-dashboard-atlantis-dark-intro.gif)
+<table>
+  <tr>
+    <td>Login Page</td>
 
-<br />
+  </tr>
+  <tr>
+    <td><img src="app/base/static/assets/img/screencapture-tweetdetective-page1.png" </td>
+  </tr>
+ </table>
 
-## How to use it
+<table>
+  <tr>
+    <td>Result Page</td>
+     <td></td>
+  </tr>
+  <tr>
+    <td><img src="app/base/static/assets/img/screencapture-tweetdetective-page2.png" width=500 height=680></td>
+    <td><img src="app/base/static/assets/img/screencapture-tweetdetective-page3.png" width=500 height=680></td>
 
-```bash
-$ # Get the code
-$ git clone https://github.com/app-generator/flask-dashboard-atlantis-dark.git
-$ cd flask-dashboard-atlantis-dark
-$
-$ # Virtualenv modules installation (Unix based systems)
-$ virtualenv env
-$ source env/bin/activate
-$
-$ # Virtualenv modules installation (Windows based systems)
-$ # virtualenv env
-$ # .\env\Scripts\activate
-$
-$ # Install modules - SQLite Database
-$ pip3 install -r requirements.txt
-$
-$ # OR with PostgreSQL connector
-$ # pip install -r requirements-pgsql.txt
-$
-$ # Set the FLASK_APP environment variable
-$ (Unix/Mac) export FLASK_APP=run.py
-$ (Windows) set FLASK_APP=run.py
-$ (Powershell) $env:FLASK_APP = ".\run.py"
-$
-$ # Set up the DEBUG environment
-$ # (Unix/Mac) export FLASK_ENV=development
-$ # (Windows) set FLASK_ENV=development
-$ # (Powershell) $env:FLASK_ENV = "development"
-$
-$ # Start the application (development mode)
-$ # --host=0.0.0.0 - expose the app on all network interfaces (default 127.0.0.1)
-$ # --port=5000    - specify the app port (default 5000)  
-$ flask run --host=0.0.0.0 --port=5000
-$
-$ # Access the dashboard in browser: http://127.0.0.1:5000/
-```
+  </tr>
+ </table>
 
-> Note: To use the app, please access the registration page and create a new user. After authentication, the app will unlock the private pages.
+This Readme file has the following sections:
+1.  [Project Organization](#ProjectOrganization)
+2.  [Flask](#Flask)
+3.  [AWS Deployment](#AWSDeployment)
+4.  [Future Work](#FutureWork)
+
 
 <br />
 
-## Code-base structure
+## 1. Project Organization <a id='ProjectOrganization'></a>
+The pipeline is written as a Python module named TweetDetective which is located under app/home directory. This module contains all the necessary functionality from collecting data to cleaning and analysing the data.
+
+Here is the different parts of the TweetDetective module:
+
+### 1.1. Web scarping using Twitter API (Data Collection)
+
+`collect_tweets` method collects a number of tweets using [Twitter standard search API](https://developer.twitter.com/en/products/twitter-api) and [Twython](https://twython.readthedocs.io/en/latest/) library and
+        returns a list of dictionaries each representing a tweet.
+
+Twitter standard search API only shows the tweets generated for the past 7 days and there is a limit of 100 API calls in one.
+
+
+
+### 1.2. Data reformatting
+`make_dataframe` method gets the list of tweets and returns it as a pandas DataFrame.
+
+### 1.3. Data cleaning
+`clean_tweet_text` method clean a tweet by performing the followings using regular expression and corpus.stopwords from NLTK library:
+
+- Remove username
+- Remove urls
+- Remove all punctuation and special character
+- Remove all stopwords if flag is True
+
+And returns a cleaned text.
+
+### 1.4. Sentiment analysis
+
+`sentiment_analysis` method takes a tweet and return the sentiment scores using sentiment.vader.SentimentIntensityAnalyzer from NLTK library.
+
+Then `sentiment_analysis_category` takes a tweet's sentimetn score and return one of 
+the 4 following categories based on a thereshold of 0.2:
+
+- Negative 
+- Neutral Negative 
+- Positive 
+- Neutral Positive
+
+In the next step, `plot_sentiment_analysis` creates a count plot of sentiment analysis.
+
+Finally, `find_top_pos_neg_tweets` method create a series of top negative and top positive tweets.
+
+### 1.5. Topic modeling
+
+Firstly, `create_bag_of_words` method vectorizes the tweets using bag of words methods from CountVectorizer in sklearn.feature_extraction.text.
+
+Then, `topic_modeling` method gets all the tweets and returns the topics
+and the highest probability of words per topic using LatentDirichletAllocatio from sklearn.decomposition. For simpilicity, we set the number of topics to 4 categories. Later on we will improve the topic modeling by tuning the number of topics using elbow method.
+
+Lastly, `plot_topic_count` creates a count plot for topics.
+
+
+### 1.6. Wordcloud
+
+A word cloud is a novelty visual representation of text data, typically used to depict keyword metadata on websites, or to visualize free form text. Tags are usually single words, and the importance of each tag is shown with font size or color. 
+
+`plot_topic_wordcloud` plots the WordCloud for each topic.
+
+
+<br />
+
+## 2. Flask <a id='Flask'></a>
+
+<img src="app/base/static/assets/img/Flask.PNG" >
+
+Flask is a lightweight WSGI web application framework for Python. It is designed to make getting started quick and easy, with the ability to scale up to complex applications. It began as a simple wrapper around Werkzeug and Jinja and has become one of the most popular Python web application frameworks.
+
+
+
+<br />
+
+### Code-base structure
 
 The project is coded using blueprints, app factory pattern, dual configuration profile (development and production) and an intuitive structure presented bellow:
 
@@ -97,7 +132,7 @@ The project is coded using blueprints, app factory pattern, dual configuration p
    |
    |-- .env                      # Inject Configuration via Environment
    |-- config.py                 # Set up the app
-   |-- run.py                    # Start the app - WSGI gateway
+   |-- application.py                    # Start the app - WSGI gateway
    |
    |-- ************************************************************************
 ```
@@ -106,13 +141,13 @@ The project is coded using blueprints, app factory pattern, dual configuration p
 
 > The bootstrap flow
 
-- `run.py` loads the `.env` file
+- `application.py` loads the `.env` file
 - Initialize the app using the specified profile: *Debug* or *Production*
   - If env.DEBUG is set to *True* the SQLite storage is used
   - If env.DEBUG is set to *False* the specified DB driver is used (MySql, PostgreSQL)
 - Call the app factory method `create_app` defined in app/__init__.py
 - Redirect the guest users to Login page
-- Unlock the pages served by *home* blueprint for authenticated users
+- Unlock the pages served by *home* blueprint
 
 <br />
 
@@ -151,7 +186,7 @@ The *Base* blueprint handles the authentication (routes and forms) and assets ma
    |
    |-- .env                                      # Inject Configuration via Environment
    |-- config.py                                 # Set up the app
-   |-- run.py                                    # Start the app - WSGI gateway
+   |-- application.py                                    # Start the app - WSGI gateway
    |
    |-- ************************************************************************
 ```
@@ -160,7 +195,7 @@ The *Base* blueprint handles the authentication (routes and forms) and assets ma
 
 > App / Home Blueprint
 
-The *Home* blueprint handles UI Kit pages for authenticated users. This is the private zone of the app - the structure is presented below:
+The *Home* blueprint handles UI Kit pages. This is the private zone of the app - the structure is presented below:
 
 ```bash
 < PROJECT ROOT >
@@ -183,115 +218,125 @@ The *Home* blueprint handles UI Kit pages for authenticated users. This is the p
    |
    |-- .env                           # Inject Configuration via Environment
    |-- config.py                      # Set up the app
-   |-- run.py                         # Start the app - WSGI gateway
+   |-- application.py                         # Start the app - WSGI gateway
    |
    |-- ************************************************************************
 ```
 
 <br />
 
-## Deployment
 
-The app is provided with a basic configuration to be executed in [Docker](https://www.docker.com/), [Heroku](https://www.heroku.com/), [Gunicorn](https://gunicorn.org/), and [Waitress](https://docs.pylonsproject.org/projects/waitress/en/stable/).
+## 3. AWS Deployment <a id='AWSDeployment'></a>
+
+AWS Elastic Beanstalk is a service for deploying and scaling web applications and services developed with Java, .NET, PHP, Node.js, Python, Ruby, Go, and Docker on familiar servers such as Apache, Nginx, Passenger, and IIS.
+
+Elastic Beanstalk automatically handles the capacity provisioning, load balancing, auto-scaling, and application health monitoring.
+
+The following resources are managed by Elastic Beanstalk"
+
+- EC2 instance – An Amazon Elastic Compute Cloud (Amazon EC2) virtual machine configured to run web apps on the platform that you choose.
+
+- Instance security group – An Amazon EC2 security group configured to allow inbound traffic on port 80. This resource lets HTTP traffic from the load balancer reach the EC2 instance running your web app. By default, traffic isn't allowed on other ports.
+
+- Load balancer – An Elastic Load Balancing load balancer configured to distribute requests to the instances running your application. A load balancer also eliminates the need to expose your instances directly to the internet.
+
+- Auto Scaling group – An Auto Scaling group configured to replace an instance if it is terminated or becomes unavailable.
+
+- Amazon S3 bucket – A storage location for your source code, logs, and other artifacts that are created when you use Elastic Beanstalk.
+
+- Amazon CloudWatch alarms – Two CloudWatch alarms that monitor the load on the instances in your environment and that are triggered if the load is too high or too low. When an alarm is triggered, your Auto Scaling group scales up or down in response.
+
+- AWS CloudFormation stack – Elastic Beanstalk uses AWS CloudFormation to launch the resources in your environment and propagate configuration changes. The resources are defined in a template that you can view in the AWS CloudFormation console.
+
+- Domain name – A domain name that routes to your web app in the form subdomain.region.elasticbeanstalk.com.
+
+
+
+
+#### 3.1. How to deploy the app locally:
+```bash
+$ # Get the code
+$ cd tweetDetective_Deployment
+$
+$ # Virtualenv modules installation (Unix based systems)
+$ virtualenv env
+$ source env/bin/activate
+$
+$ # Install modules - SQLite Database
+$ pip3 install -r requirements.txt
+$
+$ # Set the FLASK_APP environment variable
+$ (Unix/Mac) export FLASK_APP=application.py
+$
+$ # Set up the DEBUG environment
+$ (Unix/Mac) export FLASK_ENV=development
+$
+$ # Start the application (development mode)
+$ flask run --host=0.0.0.0 --port=5000
+$
+$ # Access the dashboard in browser: http://127.0.0.1:5000/
+```
+#### 3.2. How to deploy the app on AWS Elastic Beanstalk:
+
+1- Initialize your EB CLI repository with the eb init command:
+
+```bash
+~/eb-flask$ eb init -p python-3.6 tweetDetective --region us-east-2
+```
+
+   This command creates a new application named tweetDetective and configures your local repository to create environments with the latest Python 3.6 platform version.
+
+2- Run eb init again to configure a default keypair so that you can connect to the EC2 instance running your application with SSH:
+
+```bash
+~/eb-flask$ eb init
+Do you want to set up SSH for your instances?
+(y/n): y
+Select a keypair.
+1) my-keypair
+2) [ Create new KeyPair ]
+```
+
+
+3- Create an environment and deploy your application to it with eb create:
+
+```bash
+~/eb-flask$ eb create flask-env
+```
+
+Environment creation takes about 5 minutes. 
+
+4- When the environment creation process completes, open your web site with eb open:
+
+```bash
+~/eb-flask$ eb open
+```
+
+This will open a browser window using the domain name created for your application. 
 
 <br />
 
-### [Docker](https://www.docker.com/) execution
----
+## 4. Future Work <a id='FutureWork'></a>
 
-The application can be easily executed in a docker container. The steps:
+### 4.1. Aspect Sentiment Analysis 
 
-> Get the code
+Aspect Based Sentiment Analysis (ABSA) is a technique that takes into consideration the terms related to the aspects and identifies the sentiment associated with each aspect.
 
-```bash
-$ git clone https://github.com/app-generator/flask-dashboard-atlantis-dark.git
-$ cd flask-dashboard-atlantis-dark
-```
+### 4.2. BERT based Sentiment Analysis
 
-> Start the app in Docker
+BERT stands for Bidirectional Encoder Representations from Transformers, and it could be used for many NLP tasks - Classification, Question Answering, Entity Recognition, etc.
 
-```bash
-$ sudo docker-compose pull && sudo docker-compose build && sudo docker-compose up -d
-```
+### 4.3. Named Entity Recognition (NER)
 
-Visit `http://localhost:5005` in your browser. The app should be up & running.
+Named-entity recognition (NER) is a subtask of information extraction that seeks to locate and classify named entities mentioned in unstructured text into pre-defined categories. A named entity is a “real-world object” that’s assigned a name – for example, a person, a country, a product or a book title.
 
-<br />
+### 4.4. Optimizing the number of clusters for topic modeling
 
-### [Heroku](https://www.heroku.com/)
----
+Optimizing the number of topics in topic modeling using Topic Coherence score by measuring the degree of semantic similarity between high scoring words in the topic. These measurements help distinguish between topics that are semantically interpretable and topics that are artifacts of statistical inference.
 
-Steps to deploy on **Heroku**
+### 4.5. Scraping from other resources and combining it with Twitter data
 
-- [Create a FREE account](https://signup.heroku.com/) on Heroku platform
-- [Install the Heroku CLI](https://devcenter.heroku.com/articles/getting-started-with-python#set-up) that match your OS: Mac, Unix or Windows
-- Open a terminal window and authenticate via `heroku login` command
-- Clone the sources and push the project for LIVE deployment
-
-```bash
-$ # Clone the source code:
-$ git clone https://github.com/app-generator/flask-dashboard-atlantis-dark.git
-$ cd flask-dashboard-atlantis-dark
-$
-$ # Check Heroku CLI is installed
-$ heroku -v
-heroku/7.25.0 win32-x64 node-v12.13.0 # <-- All good
-$
-$ # Check Heroku CLI is installed
-$ heroku login
-$ # this commaond will open a browser window - click the login button (in browser)
-$
-$ # Create the Heroku project
-$ heroku create
-$
-$ # Trigger the LIVE deploy
-$ git push heroku master
-$
-$ # Open the LIVE app in browser
-$ heroku open
-```
-
-<br />
-
-### [Gunicorn](https://gunicorn.org/)
----
-
-Gunicorn 'Green Unicorn' is a Python WSGI HTTP Server for UNIX.
-
-> Install using pip
-
-```bash
-$ pip install gunicorn
-```
-> Start the app using gunicorn binary
-
-```bash
-$ gunicorn --bind 0.0.0.0:8001 run:app
-Serving on http://localhost:8001
-```
-
-Visit `http://localhost:8001` in your browser. The app should be up & running.
-
-<br />
-
-### [Waitress](https://docs.pylonsproject.org/projects/waitress/en/stable/)
----
-
-Waitress (Gunicorn equivalent for Windows) is meant to be a production-quality pure-Python WSGI server with very acceptable performance. It has no dependencies except ones that live in the Python standard library.
-
-> Install using pip
-
-```bash
-$ pip install waitress
-```
-> Start the app using [waitress-serve](https://docs.pylonsproject.org/projects/waitress/en/stable/runner.html)
-
-```bash
-$ waitress-serve --port=8001 run:app
-Serving on http://localhost:8001
-```
-
-Visit `http://localhost:8001` in your browser. The app should be up & running.
+More data could be scrapped and collected from other resources such as google reviews or news channels, following by merging them all for a richer data distribution.
 
 <br />
 
@@ -299,9 +344,4 @@ Visit `http://localhost:8001` in your browser. The app should be up & running.
 
 - [Flask Framework](https://www.palletsprojects.com/p/flask/) - The offcial website
 - [Boilerplate Code](https://appseed.us/boilerplate-code) - Index provided by **AppSeed**
-- [Boilerplate Code](https://github.com/app-generator/boilerplate-code) - Index published on Github
-
-<br />
-
----
-[Flask Dashboard Atlantis Dark](https://appseed.us/admin-dashboards/flask-dashboard-atlantis-dark) - Provided by **AppSeed** [Web App Generator](https://appseed.us/app-generator).
+- [AWS Elastic Beanstalk](https://aws.amazon.com/elasticbeanstalk/) - The official website
