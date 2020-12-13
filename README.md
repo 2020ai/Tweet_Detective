@@ -87,12 +87,14 @@ Finally, `find_top_pos_neg_tweets` method create a series of top negative and to
 Firstly, `create_bag_of_words` method vectorizes the tweets using bag of words methods from CountVectorizer in sklearn.feature_extraction.text.
 
 Then, `topic_modeling` method gets all the tweets and returns the topics
-and the highest probability of words per topic using LatentDirichletAllocatio from sklearn.decomposition.
+and the highest probability of words per topic using LatentDirichletAllocatio from sklearn.decomposition. For simpilicity, we set the number of topics to 4 categories. Later on we will improve the topic modeling by tuning the number of topics using elbow method.
 
 Lastly, `plot_topic_count` creates a count plot for topics.
 
 
 ### 1.6. Wordcloud
+
+A word cloud is a novelty visual representation of text data, typically used to depict keyword metadata on websites, or to visualize free form text. Tags are usually single words, and the importance of each tag is shown with font size or color. 
 
 `plot_topic_wordcloud` plots the WordCloud for each topic.
 
