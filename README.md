@@ -43,7 +43,7 @@ This Readme file has the following sections:
 
 ## 2. Flask <a id='Flask'></a>
 
-<img src="app/base/static/assets/img/Flask.png" >
+<img src="app/base/static/assets/img/Flask.PNG" >
 
 Flask is a lightweight WSGI web application framework for Python. It is designed to make getting started quick and easy, with the ability to scale up to complex applications. It began as a simple wrapper around Werkzeug and Jinja and has become one of the most popular Python web application frameworks.
 
