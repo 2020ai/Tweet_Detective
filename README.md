@@ -1,5 +1,7 @@
 # [Tweet Detective](http://tweetdetective.eba-phmcemwv.us-east-2.elasticbeanstalk.com/)
 
+<br />
+
 ## Description
 
 Tweet Detective is an end-to-end web application using Flask, Docker, and Elastic Beanstalk by scraping tweets and providing in-depth insights about specific businesses that could save business owners hours of tweets reading and analysing. The app can be accessed from the following link: http://tweetdetective.eba-phmcemwv.us-east-2.elasticbeanstalk.com/
@@ -34,9 +36,65 @@ This Readme file has the following sections:
 3.  [AWS Deployment](#AWSDeployment)
 4.  [Future Work](#FutureWork)
 
+
+<br />
+
 ## 1. Project Organization <a id='ProjectOrganization'></a>
+The pipeline is written as a Python module named TweetDetective which is located under app/home directory. This module contains all the necessary functionality from collecting data to cleaning and analysing the data.
+
+Here is the different parts of the TweetDetective module:
+
+### 1.1. Web scarping using Twitter API (Data Collection)
+
+`collect_tweets` method collects a number of tweets using [Twitter standard search API](https://developer.twitter.com/en/products/twitter-api) and [Twython](https://twython.readthedocs.io/en/latest/) library and
+        returns a list of dictionaries each representing a tweet.
+
+Twitter standard search API only shows the tweets generated for the past 7 days and there is a limit of 100 API calls in one.
 
 
+
+### 1.2. Data reformatting
+`make_dataframe` method gets the list of tweets and returns it as a pandas DataFrame.
+
+### 1.3. Data cleaning
+`clean_tweet_text` method clean a tweet by performing the followings using regular expression and corpus.stopwords from NLTK library:
+
+- Remove username
+- Remove urls
+- Remove all punctuation and special character
+- Remove all stopwords if flag is True
+
+And returns a cleaned text.
+
+### 1.4. Sentiment analysis
+
+`sentiment_analysis` method takes a tweet and return the sentiment scores using sentiment.vader.SentimentIntensityAnalyzer from NLTK library.
+
+Then `sentiment_analysis_category` takes a tweet's sentimetn score and return one of 
+the 4 following categories based on a thereshold of 0.2:
+
+- Negative 
+- Neutral Negative 
+- Positive 
+- Neutral Positive
+
+In the next step, `plot_sentiment_analysis` creates a ount plot of sentiment analysis.
+
+Finally, `find_top_pos_neg_tweets` method create a series of top negative and top positive tweets.
+
+### 1.5. Topic modeling
+
+Firstly, `create_bag_of_words` method vectorizes the tweets using bag of words methods from CountVectorizer in sklearn.feature_extraction.text.
+
+Then, `topic_modeling` method gets all the tweets and returns the topics
+and the highest probability of words per topic using LatentDirichletAllocatio from sklearn.decomposition.
+
+Lastly, `plot_topic_count` creates a count plot for topics.
+
+
+### 1.6. Wordcloud
+
+`plot_topic_wordcloud` plots the WordCloud for each topic.
 
 
 <br />
@@ -253,6 +311,8 @@ Environment creation takes about 5 minutes.
 ```
 
 This will open a browser window using the domain name created for your application. 
+
+<br />
 
 ## 4. Future Work <a id='FutureWork'></a>
 
