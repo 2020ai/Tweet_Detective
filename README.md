@@ -318,6 +318,26 @@ This will open a browser window using the domain name created for your applicati
 
 ## 4. Future Work <a id='FutureWork'></a>
 
+### 4.1. Aspect Sentiment Analysis 
+
+Aspect Based Sentiment Analysis (ABSA) is a technique that takes into consideration the terms related to the aspects and identifies the sentiment associated with each aspect.
+
+### 4.2. BERT based Sentiment Analysis
+
+BERT stands for Bidirectional Encoder Representations from Transformers, and it could be used for many NLP tasks - Classification, Question Answering, Entity Recognition, etc.
+
+### 4.3. Named Entity Recognition (NER)
+
+Named-entity recognition (NER) is a subtask of information extraction that seeks to locate and classify named entities mentioned in unstructured text into pre-defined categories. A named entity is a “real-world object” that’s assigned a name – for example, a person, a country, a product or a book title.
+
+### 4.4. Dynamic Topic Modeling (optimizing the number of clusters)
+
+Optimizing the number of topics in topic modeling using Topic Coherence score by measuring the degree of semantic similarity between high scoring words in the topic. These measurements help distinguish between topics that are semantically interpretable and topics that are artifacts of statistical inference.
+
+### 4.5. Scraping from other resources and combining it with Twitter data
+
+More data could be scrapped and collected from other resources such as google reviews or news channels, following by merging them all for a richer data distribution.
+
 <br />
 
 ## Credits & Links
